@@ -2,27 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/productFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
+        android:id="@+id/productFragment"
         android:name="com.example.madlevel4task1.ProductFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_product">
-
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.madlevel4task1.AddProductFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_add_product">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+        android:label="fragment_product"
+        tools:layout="@layout/fragment_product" />
 </navigation>
