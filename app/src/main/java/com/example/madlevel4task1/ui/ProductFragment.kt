@@ -1,4 +1,4 @@
-package com.example.madlevel4task1
+package com.example.madlevel4task1.ui
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.madlevel4task1.R
+import com.example.madlevel4task1.model.Product
+import com.example.madlevel4task1.repository.ProductRepository
 import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +32,8 @@ class ProductFragment : Fragment() {
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
     private val products = arrayListOf<Product>()
-    private val shoppinglistAdapter = ShoppingListAdapter(products)
+    private val shoppinglistAdapter =
+        ShoppingListAdapter(products)
 
 
     override fun onCreateView(
@@ -42,7 +46,10 @@ class ProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productRepository = ProductRepository(requireContext())
+        productRepository =
+            ProductRepository(
+                requireContext()
+            )
         getShoppingListFromDatabase()
 
         initRv()
