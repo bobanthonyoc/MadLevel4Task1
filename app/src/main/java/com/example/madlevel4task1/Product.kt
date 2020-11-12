@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "productTable")
+@Entity(tableName = "product_Table")
 data class Product (
     @ColumnInfo(name = "productName")
     var product_name: String,
