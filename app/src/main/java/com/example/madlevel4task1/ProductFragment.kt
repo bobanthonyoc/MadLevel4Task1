@@ -4,19 +4,16 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +48,10 @@ class ProductFragment : Fragment() {
         initRv()
 
         fab.setOnClickListener {
-            showAddProductdialog();
+            showAddProductdialog()
+        }
+        fab2.setOnClickListener {
+            removeAllProducts()
         }
     }
 
@@ -59,7 +59,7 @@ class ProductFragment : Fragment() {
     private fun showAddProductdialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.add_product_dialog_title))
-        val dialogLayout = layoutInflater.inflate(R.layout.fragment_add_product, null)
+        val dialogLayout = layoutInflater.inflate(R.layout.add_product_dialog, null)
         val productName = dialogLayout.findViewById<EditText>(R.id.txt_product_name)
         val amount = dialogLayout.findViewById<EditText>(R.id.txt_amount)
 
@@ -75,7 +75,7 @@ class ProductFragment : Fragment() {
             mainScope.launch {
                 val product = Product(
                     product_name = txtProductName.text.toString(),
-                    product_amount = txtAmount.text.toString().toInt()
+                    product_amount = txtAmount.text.toString()
                 )
 
                 withContext(Dispatchers.IO) {
@@ -87,12 +87,17 @@ class ProductFragment : Fragment() {
         }
     }
 
-    private fun validateFields(txtProductName: EditText
-                               , txtAmount: EditText
-    ): Boolean {
-        return if (txtProductName.text.toString().isNotBlank()
-            && txtAmount.text.toString().isNotBlank()
-        ) {
+    private fun removeAllProducts() {
+        mainScope.launch {
+            withContext(Dispatchers.IO) {
+                productRepository.deleteAllProducts()
+            }
+            getShoppingListFromDatabase()
+        }
+    }
+
+    private fun validateFields(txtProductName: EditText, txtAmount: EditText): Boolean {
+        return if (txtProductName.text.toString().isNotBlank() && txtAmount.text.toString().isNotBlank()) {
             true
         } else {
             Toast.makeText(activity, "Please fill in the fields", Toast.LENGTH_LONG).show()
@@ -102,29 +107,20 @@ class ProductFragment : Fragment() {
 
 
     private fun initRv() {
-        viewManager = LinearLayoutManager(activity)
-        rv_shopping_list.addItemDecoration(
-            DividerItemDecoration(
-                activity,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        rv_shopping_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        rv_shopping_list.adapter = shoppinglistAdapter
+        rv_shopping_list.setHasFixedSize(true)
+        rv_shopping_list.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         createItemTouchHelper().attachToRecyclerView(rv_shopping_list)
-
-        rv_shopping_list.apply {
-            setHasFixedSize(true)
-            layoutManager = viewManager
-            adapter = ShoppingListAdapter
-        }
     }
 
     private fun getShoppingListFromDatabase() {
         mainScope.launch {
-            val shoppingList = withContext(Dispatchers.IO) {
+            val arrayListOf = withContext(Dispatchers.IO) {
                 productRepository.getAllProducts()
             }
             this@ProductFragment.products.clear()
-            this@ProductFragment.products.addAll(shoppingList)
+            this@ProductFragment.products.addAll(arrayListOf)
             this@ProductFragment.shoppinglistAdapter.notifyDataSetChanged()
         }
     }
@@ -157,21 +153,5 @@ class ProductFragment : Fragment() {
             }
         }
         return ItemTouchHelper(callback)
-
-        fab2.setOnClickListener {
-            removeAllProducts()
-        }
     }
-
-    private fun removeAllProducts() {
-        mainScope.launch {
-            withContext(Dispatchers.IO) {
-                productRepository.deleteAllProducts()
-            }
-            getShoppingListFromDatabase()
-        }
-    }
-
-
-
 }

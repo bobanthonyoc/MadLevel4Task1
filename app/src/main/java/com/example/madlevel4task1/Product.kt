@@ -10,7 +10,7 @@ data class Product (
     var product_name: String,
 
     @ColumnInfo(name = "product_amount")
-    var product_amount: Int,
+    var product_amount: String,
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
